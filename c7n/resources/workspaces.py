@@ -396,7 +396,7 @@ class DeregisterWorkspaceDirectory(BaseAction):
             except client.exceptions.InvalidResourceStateException as e:
                 self.log.error(f"Error deregistering workspace: {d['DirectoryId']} error: {e}")
                 continue
-            except client.exceptions.ResourceAssociatedException as e:
+            except client.exceptions.OperationNotSupportedException as e:
                 self.log.error(f"Error deregistering workspace: {d['DirectoryId']} error: {e}")
                 continue
             except client.exceptions.ResourceNotFoundException:
