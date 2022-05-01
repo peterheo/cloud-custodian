@@ -227,6 +227,31 @@ class WorkspacesTest(BaseTest):
         call = client.describe_workspace_directories(DirectoryIds=[directoryId])
         self.assertEqual(call['Directories'], [])
 
+    def test_workspaces_directory_deregister_not_supported(self):
+        factory = self.record_flight_data("test_workspaces_directory_deregister_not_supported")
+        p = self.load_policy(
+            {
+                "name": "workspace-deregister",
+                "resource": "workspaces-directory",
+                'filters': [{
+                    'tag:Deregister': 'present'
+                }],
+                'actions': [{
+                    'type': 'deregister'
+                }]
+            },
+            session_factory=factory,
+        )
+
+        resources = p.run()
+        self.assertEqual(1, len(resources))
+        directoryId = resources[0].get('DirectoryId')
+        client = factory().client('workspaces')
+        if self.recording:
+            time.sleep(5)
+        call = client.describe_workspace_directories(DirectoryIds=[directoryId])
+        self.assertTrue(call['Directories'])
+
     def test_workspaces_directory_subnet_sg(self):
         factory = self.replay_flight_data("test_workspaces_directory_subnet_sg")
         p = self.load_policy(
