@@ -228,7 +228,7 @@ class WorkspacesTest(BaseTest):
         self.assertEqual(call['Directories'], [])
 
     def test_workspaces_directory_deregister_not_supported(self):
-        factory = self.record_flight_data("test_workspaces_directory_deregister_not_supported")
+        factory = self.replay_flight_data("test_workspaces_directory_deregister_not_supported")
         p = self.load_policy(
             {
                 "name": "workspace-deregister",
