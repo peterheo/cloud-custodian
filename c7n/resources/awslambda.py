@@ -10,7 +10,7 @@ from concurrent.futures import as_completed
 from datetime import timedelta, datetime
 
 from c7n.actions import Action, RemovePolicyBase, ModifyVpcSecurityGroupsAction
-from c7n.filters import CrossAccountAccessFilter, ValueFilter
+from c7n.filters import CrossAccountAccessFilter, ValueFilter, Filter
 from c7n.filters.kms import KmsRelatedFilter
 import c7n.filters.vpc as net_filters
 from c7n.manager import resources
@@ -253,6 +253,60 @@ class LambdaCrossAccountAccessFilter(CrossAccountAccessFilter):
 class KmsFilter(KmsRelatedFilter):
 
     RelatedIdsExpression = 'KMSKeyArn'
+
+
+@AWSLambda.filter_registry.register('lambda-edge')
+class LambdaEdge(Filter):
+    """
+    Filter for lambda@edge functions
+    :example:
+        .. code-block:: yaml
+            policies:
+                - name: lambda-edge-filter
+                  resource: lambda
+                  filters:
+                    - type: lambda-edge
+                      state: True
+    """
+    permissions = ('lambda:ListVersionsByFunction',)
+
+    schema = type_schema('lambda-edge',
+                         **{'state': {'type': 'boolean'}})
+
+    def process(self, resources, event=None):
+        edge_functions = []
+        non_edge_functions = []
+        edge_dist_map = {}
+
+        client = local_session(self.manager.session_factory).client('lambda')
+        distributions = self.manager.get_resource_manager('distribution').resources()
+
+        for d in distributions:
+            for function in d['DefaultCacheBehavior']['LambdaFunctionAssociations']['Items']:
+                arn = function['LambdaFunctionARN']
+                edge_dist_map[arn] = d['Id']
+
+        edge_arns = edge_dist_map.keys()
+        unqualified_edge_arns = list(map(lambda s: ':'.join(s.split(':')[:-1]), edge_arns))
+
+        for r in resources:
+            if r['FunctionArn'] in unqualified_edge_arns:
+                versions_pager = client.get_paginator('list_versions_by_function')
+                versions_pager.PAGE_ITERATOR_CLASS = query.RetryPageIterator
+                pager = versions_pager.paginate(FunctionName=r['FunctionName'])
+
+                for page in pager:
+                    versions = page.get('Versions')
+                    for v in versions:
+                        arn = v['FunctionArn']
+                        if arn in edge_arns:
+                            r['VersionedFunctionArn'] = arn
+                            r['AssociatedDistributionId'] = edge_dist_map[arn]
+                            edge_functions.append(r)
+            else:
+                non_edge_functions.append(r)
+
+        return edge_functions if self.data.get('state') else non_edge_functions
 
 
 @AWSLambda.action_registry.register('post-finding')
