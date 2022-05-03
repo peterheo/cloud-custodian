@@ -1,0 +1,79 @@
+{
+    "status_code": 200,
+    "data": {
+        "ResponseMetadata": {},
+        "Versions": [
+            {
+                "FunctionName": "edge-filter-test",
+                "FunctionArn": "arn:aws:lambda:us-east-1:644160558196:function:edge-filter-test:$LATEST",
+                "Runtime": "nodejs12.x",
+                "Role": "arn:aws:iam::644160558196:role/BrentTestCustodianRole",
+                "Handler": "index.handler",
+                "CodeSize": 350,
+                "Description": "Blueprint for modifying CloudFront response header implemented in NodeJS.",
+                "Timeout": 1,
+                "MemorySize": 128,
+                "LastModified": "2022-05-03T19:22:03.000+0000",
+                "CodeSha256": "fvlh5JTW8cCUyvD59KsCFwFo28SE5BDVkF0XBiA7AKQ=",
+                "Version": "$LATEST",
+                "VpcConfig": {
+                    "SubnetIds": [],
+                    "SecurityGroupIds": [],
+                    "VpcId": ""
+                },
+                "TracingConfig": {
+                    "Mode": "PassThrough"
+                },
+                "RevisionId": "04491992-0fa8-4228-afe9-91ff79072cd7",
+                "PackageType": "Zip",
+                "Architectures": [
+                    "x86_64"
+                ]
+            },
+            {
+                "FunctionName": "edge-filter-test",
+                "FunctionArn": "arn:aws:lambda:us-east-1:644160558196:function:edge-filter-test:4",
+                "Runtime": "nodejs12.x",
+                "Role": "arn:aws:iam::644160558196:role/BrentTestCustodianRole",
+                "Handler": "index.handler",
+                "CodeSize": 339,
+                "Description": "Testing lambda edge filter",
+                "Timeout": 1,
+                "MemorySize": 128,
+                "LastModified": "2022-05-03T16:00:41.000+0000",
+                "CodeSha256": "ow6y7haF235HgJf6BUggCziWOE1bLnyRdnT39xtdJ5g=",
+                "Version": "4",
+                "TracingConfig": {
+                    "Mode": "PassThrough"
+                },
+                "RevisionId": "f9b9fb9c-e2e8-4a11-afc5-be9f346cc701",
+                "PackageType": "Zip",
+                "Architectures": [
+                    "x86_64"
+                ]
+            },
+            {
+                "FunctionName": "edge-filter-test",
+                "FunctionArn": "arn:aws:lambda:us-east-1:644160558196:function:edge-filter-test:5",
+                "Runtime": "nodejs12.x",
+                "Role": "arn:aws:iam::644160558196:role/BrentTestCustodianRole",
+                "Handler": "index.handler",
+                "CodeSize": 350,
+                "Description": "Blueprint for modifying CloudFront response header implemented in NodeJS.",
+                "Timeout": 1,
+                "MemorySize": 128,
+                "LastModified": "2022-05-03T16:47:19.563+0000",
+                "CodeSha256": "fvlh5JTW8cCUyvD59KsCFwFo28SE5BDVkF0XBiA7AKQ=",
+                "Version": "5",
+                "TracingConfig": {
+                    "Mode": "PassThrough"
+                },
+                "RevisionId": "8fce2d02-1e97-43d4-9fdf-85b5dd9f9ea4",
+                "PackageType": "Zip",
+                "Architectures": [
+                    "x86_64"
+                ]
+            }
+        ]
+    }
+}

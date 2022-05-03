@@ -385,6 +385,39 @@ class LambdaTest(BaseTest):
         self.assertEqual(resources[0]["FunctionName"], "mys3")
         self.assertEqual(resources[0]["c7n:matched-security-groups"], ["sg-f9cc4d9f"])
 
+    def test_lambda_edge(self):
+        factory = self.replay_flight_data("test_aws_lambda_edge")
+        p = self.load_policy(
+            {
+                "name": "lambda-edge-filter",
+                "resource": "lambda",
+                "filters": [{"type": "lambda-edge",
+                            "state": True}],
+            },
+            session_factory=factory,
+        )
+        resources = p.run()
+        self.assertEqual(len(resources), 1)
+        self.assertEqual(
+            {r["VersionedFunctionArn"] for r in resources},
+            {"arn:aws:lambda:us-east-1:644160558196:function:edge-filter-test:5"}
+        )
+
+    def test_lambda_edge_non_edge(self):
+        factory = self.replay_flight_data("test_aws_lambda_edge")
+        p = self.load_policy(
+            {
+                "name": "lambda-edge-filter",
+                "resource": "lambda",
+                "filters": [{"type": "lambda-edge",
+                            "state": False}],
+            },
+            session_factory=factory,
+        )
+        resources = p.run()
+        self.assertNotEqual(len(resources), 1)
+        self.assertTrue({"VersionedFunctionArn" not in r.keys() for r in resources})
+
 
 class LambdaTagTest(BaseTest):
 
