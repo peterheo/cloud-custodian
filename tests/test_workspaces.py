@@ -8,6 +8,7 @@ from .common import BaseTest
 from c7n import filters
 from c7n.executor import MainThreadExecutor
 from c7n.resources.workspaces import Workspace
+from c7n.exceptions import PolicyExecutionError
 from c7n.testing import mock_datetime_now
 from c7n.utils import annotation
 
@@ -242,13 +243,52 @@ class WorkspacesTest(BaseTest):
             },
             session_factory=factory,
         )
+        with self.assertRaises(PolicyExecutionError):
+            p.run()
+
+    def test_workspaces_directory_deregister_not_found(self):
+        factory = self.replay_flight_data("test_workspaces_directory_deregister_not_found")
+        p = self.load_policy(
+            {
+                "name": "workspace-deregister",
+                "resource": "workspaces-directory",
+                'filters': [{
+                    'tag:Deregister': 'present'
+                }],
+                'actions': [{
+                    'type': 'deregister'
+                }]
+            },
+            session_factory=factory,
+        )
 
         resources = p.run()
         self.assertEqual(1, len(resources))
         directoryId = resources[0].get('DirectoryId')
         client = factory().client('workspaces')
-        if self.recording:
-            time.sleep(5)
+        call = client.describe_workspace_directories(DirectoryIds=[directoryId])
+        self.assertTrue(call['Directories'])
+
+    def test_workspaces_directory_deregister_invalid_state(self):
+        factory = self.replay_flight_data("test_workspaces_directory_deregister_invalid_state")
+        p = self.load_policy(
+            {
+                "name": "workspace-deregister",
+                "resource": "workspaces-directory",
+                'filters': [{
+                    'tag:Deregister': 'present'
+                }],
+                'actions': [{
+                    'type': 'deregister'
+                }]
+            },
+            session_factory=factory,
+        )
+
+        resources = p.run()
+        self.assertEqual(1, len(resources))
+        directoryId = resources[0].get('DirectoryId')
+        client = factory().client('workspaces')
         call = client.describe_workspace_directories(DirectoryIds=[directoryId])
         self.assertTrue(call['Directories'])
 

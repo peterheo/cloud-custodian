@@ -10,7 +10,7 @@ from c7n.filters.kms import KmsRelatedFilter
 from c7n.manager import resources
 from c7n.query import QueryResourceManager, TypeInfo
 from c7n.tags import universal_augment
-from c7n.exceptions import PolicyValidationError
+from c7n.exceptions import PolicyValidationError, PolicyExecutionError
 from c7n.utils import local_session, type_schema, chunks
 from c7n.filters.iamaccess import CrossAccountAccessFilter
 from c7n.resolver import ValuesFrom
@@ -388,16 +388,26 @@ class DeregisterWorkspaceDirectory(BaseAction):
     permissions = ('workspaces:DeregisterWorkspaceDirectory',)
 
     def process(self, directories):
-
+        exceptions = []
+        tries = 5
         client = local_session(self.manager.session_factory).client('workspaces')
         for d in directories:
-            try:
-                client.deregister_workspace_directory(DirectoryId=d['DirectoryId'])
-            except client.exceptions.InvalidResourceStateException as e:
-                self.log.error(f"Error deregistering workspace: {d['DirectoryId']} error: {e}")
-                continue
-            except client.exceptions.OperationNotSupportedException as e:
-                self.log.error(f"Error deregistering workspace: {d['DirectoryId']} error: {e}")
-                continue
-            except client.exceptions.ResourceNotFoundException:
-                continue
+            for i in range(0, tries):
+                try:
+                    client.deregister_workspace_directory(DirectoryId=d['DirectoryId'])
+                except client.exceptions.InvalidResourceStateException as e:
+                    self.log.error(f"Error deregistering workspace: {d['DirectoryId']} error: {e}\nRetrying...")
+                    continue
+                except client.exceptions.ResourceNotFoundException as e:
+                    self.log.error(f"Error deregistering workspace: {d['DirectoryId']} error: {e}")
+                    break
+                except client.exceptions.OperationNotSupportedException as e:
+                    self.log.error(f"Error deregistering workspace: {d['DirectoryId']} error: {e}")
+                    exceptions.append(d['DirectoryId'])
+                    break
+
+        if exceptions:
+            raise PolicyExecutionError(
+                'The following directories must be removed from WorkSpaces'
+                'and cannot be deregistered: %s ' % ''.join(map(str, exceptions))
+            )
