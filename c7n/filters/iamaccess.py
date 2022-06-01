@@ -155,7 +155,7 @@ class PolicyChecker:
         return not principal_ok
 
     def evaluateServicePrincipal(self, s):
-        if not 'Condition' in s:
+        if 'Condition' not in s:
             return False
 
         return not self.handle_conditions(s)
