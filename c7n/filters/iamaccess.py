@@ -126,14 +126,14 @@ class PolicyChecker:
         if not isinstance(principals, dict):
             principals = {'AWS': principals}
 
-        principals_set = set(principals)
+        principals_types = set(principals)
         # If principals only include services, evaluate separately
-        if len(principals_set) == 1 and 'Service' in principals_set:
+        if len(principals_types) == 1 and 'Service' in principals_types:
             return self.evaluateServicePrincipal(s)
 
         # Ignore service principals, merge the rest into a single set
         non_service_principals = set()
-        for principal_type in principals_set - {'Service'}:
+        for principal_type in principals_types - {'Service'}:
             p = principals[principal_type]
             non_service_principals.update({p} if isinstance(p, str) else p)
 
