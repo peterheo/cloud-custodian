@@ -3,6 +3,7 @@
 import datetime
 import time
 from dateutil import parser
+from mock import patch
 
 from .common import BaseTest
 from c7n import filters
@@ -285,7 +286,8 @@ class WorkspacesTest(BaseTest):
             session_factory=factory,
         )
 
-        resources = p.run()
+        with patch('c7n.utils.time.sleep', new_callable=time.sleep(0)):
+            resources = p.run()
         self.assertEqual(1, len(resources))
         directoryId = resources[0].get('DirectoryId')
         client = factory().client('workspaces')
