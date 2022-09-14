@@ -1,0 +1,16 @@
+{
+    "status_code": 200,
+    "data": {
+        "ResponseMetadata": {},
+        "AgentStatus": {
+            "AgentStatusARN": "arn:aws:connect:us-east-1:644160558196:instance/3ae4d9fa-af6c-4efd-b791-0ad53611b48e/agent-state/c6cfc87d-5da8-49eb-9c88-6bde703af351",
+            "AgentStatusId": "c6cfc87d-5da8-49eb-9c88-6bde703af351",
+            "Name": "Available",
+            "Description": "Available state",
+            "Type": "ROUTABLE",
+            "DisplayOrder": 1,
+            "State": "ENABLED",
+            "Tags": {}
+        }
+    }
+}

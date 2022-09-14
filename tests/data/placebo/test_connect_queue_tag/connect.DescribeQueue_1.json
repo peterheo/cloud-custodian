@@ -1,0 +1,17 @@
+{
+    "status_code": 200,
+    "data": {
+        "ResponseMetadata": {},
+        "Queue": {
+            "Name": "BasicQueue",
+            "QueueArn": "arn:aws:connect:us-east-1:644160558196:instance/3ae4d9fa-af6c-4efd-b791-0ad53611b48e/queue/c0e1ebb4-2938-453c-adb4-e1f505b37205",
+            "QueueId": "c0e1ebb4-2938-453c-adb4-e1f505b37205",
+            "Description": "A simple, basic voice queue.",
+            "HoursOfOperationId": "db1fdcd0-d970-491e-b50c-9d6866f7e0db",
+            "Status": "ENABLED",
+            "Tags": {
+                "abcd": "xyz"
+            }
+        }
+    }
+}

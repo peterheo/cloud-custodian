@@ -1,0 +1,31 @@
+{
+    "status_code": 200,
+    "data": {
+        "ResponseMetadata": {},
+        "User": {
+            "Id": "f09a6904-0d56-45f3-bcd2-fd568aea47ab",
+            "Arn": "arn:aws:connect:us-east-1:644160558196:instance/3ae4d9fa-af6c-4efd-b791-0ad53611b48e/agent/f09a6904-0d56-45f3-bcd2-fd568aea47ab",
+            "Username": "c7n",
+            "IdentityInfo": {
+                "FirstName": "c7n",
+                "LastName": "test",
+                "Email": "c7ntest@gmail.com"
+            },
+            "PhoneConfig": {
+                "PhoneType": "SOFT_PHONE",
+                "AutoAccept": false,
+                "AfterContactWorkTimeLimit": 0,
+                "DeskPhoneNumber": ""
+            },
+            "DirectoryUserId": "8a94a129-b01c-4bbf-9393-670b32bb2bdb",
+            "SecurityProfileIds": [
+                "a6a4ff28-e45c-4505-8780-889ce5e22aef"
+            ],
+            "RoutingProfileId": "c17a6959-5d51-4187-a4c2-68bec4ccdbfe",
+            "Tags": {
+                "custodian_cleanup": "Resource does not meet policy: notify@2022/09/11",
+                "abcd": "xyz"
+            }
+        }
+    }
+}

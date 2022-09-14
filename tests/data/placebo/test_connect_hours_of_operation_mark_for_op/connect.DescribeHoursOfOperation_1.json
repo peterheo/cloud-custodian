@@ -1,0 +1,93 @@
+{
+    "status_code": 200,
+    "data": {
+        "ResponseMetadata": {},
+        "HoursOfOperation": {
+            "HoursOfOperationId": "db1fdcd0-d970-491e-b50c-9d6866f7e0db",
+            "HoursOfOperationArn": "arn:aws:connect:us-east-1:644160558196:instance/3ae4d9fa-af6c-4efd-b791-0ad53611b48e/operating-hours/db1fdcd0-d970-491e-b50c-9d6866f7e0db",
+            "Name": "Basic Hours",
+            "Description": "Always open hours",
+            "TimeZone": "America/New_York",
+            "Config": [
+                {
+                    "Day": "SUNDAY",
+                    "StartTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    },
+                    "EndTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    }
+                },
+                {
+                    "Day": "FRIDAY",
+                    "StartTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    },
+                    "EndTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    }
+                },
+                {
+                    "Day": "TUESDAY",
+                    "StartTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    },
+                    "EndTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    }
+                },
+                {
+                    "Day": "WEDNESDAY",
+                    "StartTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    },
+                    "EndTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    }
+                },
+                {
+                    "Day": "MONDAY",
+                    "StartTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    },
+                    "EndTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    }
+                },
+                {
+                    "Day": "SATURDAY",
+                    "StartTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    },
+                    "EndTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    }
+                },
+                {
+                    "Day": "THURSDAY",
+                    "StartTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    },
+                    "EndTime": {
+                        "Hours": 0,
+                        "Minutes": 0
+                    }
+                }
+            ],
+            "Tags": {}
+        }
+    }
+}

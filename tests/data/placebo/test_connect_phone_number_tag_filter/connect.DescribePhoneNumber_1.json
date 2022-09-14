@@ -1,0 +1,21 @@
+{
+    "status_code": 200,
+    "data": {
+        "ResponseMetadata": {},
+        "ClaimedPhoneNumberSummary": {
+            "PhoneNumberId": "c671d670-9877-465b-b33b-418af455369d",
+            "PhoneNumberArn": "arn:aws:connect:us-east-1:644160558196:phone-number/c671d670-9877-465b-b33b-418af455369d",
+            "PhoneNumber": "+18005841524",
+            "PhoneNumberCountryCode": "US",
+            "PhoneNumberType": "TOLL_FREE",
+            "PhoneNumberDescription": "test",
+            "TargetArn": "arn:aws:connect:us-east-1:644160558196:instance/3ae4d9fa-af6c-4efd-b791-0ad53611b48e",
+            "Tags": {
+                "abcd": "xyz"
+            },
+            "PhoneNumberStatus": {
+                "Status": "CLAIMED"
+            }
+        }
+    }
+}
