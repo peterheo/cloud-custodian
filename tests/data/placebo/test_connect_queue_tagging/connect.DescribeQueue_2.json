@@ -10,6 +10,7 @@
             "HoursOfOperationId": "8a0ca49e-a5e3-4fdc-bb61-c02c170ca315",
             "Status": "ENABLED",
             "Tags": {
+                "custodian_cleanup": "Resource does not meet policy: notify@2022/09/19",
                 "c7n": "True",
                 "abcd": "xyz"
             }

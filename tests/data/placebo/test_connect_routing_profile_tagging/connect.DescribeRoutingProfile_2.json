@@ -24,6 +24,7 @@
             ],
             "DefaultOutboundQueueId": "6c5eba02-9916-4ec4-9208-94f5acaa7205",
             "Tags": {
+                "custodian_cleanup": "Resource does not meet policy: notify@2022/09/19",
                 "c7n": "True",
                 "abcd": "xyz"
             }
