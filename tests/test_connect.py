@@ -70,7 +70,9 @@ class ConnectUserTest(BaseTest):
             {
                 "name": "connect-user-tag-test",
                 "resource": "connect-user",
-                "filters": [{'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}],
+                "filters": [
+                    {'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}
+                ],
                 "actions": [
                     {"type": "tag", "key": "abcd", "value": "xyz"},
                     {"type": "remove-tag", "tags": ["custodian_cleanup"]},
@@ -122,7 +124,9 @@ class ConnectRoutingProfileTest(BaseTest):
             {
                 "name": "connect-routing-profile-tag-test",
                 "resource": "connect-routing-profile",
-                "filters": [{'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}],
+                "filters": [
+                    {'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}
+                ],
                 "actions": [
                     {"type": "tag", "key": "abcd", "value": "xyz"},
                     {"type": "remove-tag", "tags": ["custodian_cleanup"]},
@@ -174,7 +178,9 @@ class ConnectQueueTest(BaseTest):
             {
                 "name": "connect-queue-tag-test",
                 "resource": "connect-queue",
-                "filters": [{'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}],
+                "filters": [
+                    {'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}
+                ],
                 "actions": [
                     {"type": "tag", "key": "abcd", "value": "xyz"},
                     {"type": "remove-tag", "tags": ["custodian_cleanup"]},
@@ -226,7 +232,9 @@ class ConnectQuickConnectTest(BaseTest):
             {
                 "name": "connect-quick-connect-tag-test",
                 "resource": "connect-quick-connect",
-                "filters": [{'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}],
+                "filters": [
+                    {'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}
+                ],
                 "actions": [
                     {"type": "tag", "key": "abcd", "value": "xyz"},
                     {"type": "remove-tag", "tags": ["custodian_cleanup"]},
@@ -278,7 +286,9 @@ class ConnectContactFlowTest(BaseTest):
             {
                 "name": "connect-contact-flow-tag-test",
                 "resource": "connect-contact-flow",
-                "filters": [{'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}],
+                "filters": [
+                    {'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}
+                ],
                 "actions": [
                     {"type": "tag", "key": "abcd", "value": "xyz"},
                     {"type": "remove-tag", "tags": ["custodian_cleanup"]},
@@ -291,6 +301,7 @@ class ConnectContactFlowTest(BaseTest):
         arn = resources[0]['Arn']
         tags = client.list_tags_for_resource(resourceArn=arn)
         self.assertEqual(tags.get('tags'), {'c7n': 'True', 'abcd': 'xyz'})
+
 
 class ConnectAgentStatusTest(BaseTest):
 
@@ -329,7 +340,9 @@ class ConnectAgentStatusTest(BaseTest):
             {
                 "name": "connect-agent-status-tag-test",
                 "resource": "connect-agent-status",
-                "filters": [{'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}],
+                "filters": [
+                    {'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}
+                ],
                 "actions": [
                     {"type": "tag", "key": "abcd", "value": "xyz"},
                     {"type": "remove-tag", "tags": ["custodian_cleanup"]},
@@ -342,6 +355,7 @@ class ConnectAgentStatusTest(BaseTest):
         arn = resources[0]['AgentStatusARN']
         tags = client.list_tags_for_resource(resourceArn=arn)
         self.assertEqual(tags.get('tags'), {'c7n': 'True', 'abcd': 'xyz'})
+
 
 class ConnectHoursOfOperationTest(BaseTest):
 
@@ -380,7 +394,9 @@ class ConnectHoursOfOperationTest(BaseTest):
             {
                 "name": "connect-hours-of-operation-tag-test",
                 "resource": "connect-hours-of-operation",
-                "filters": [{'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}],
+                "filters": [
+                    {'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}
+                ],
                 "actions": [
                     {"type": "tag", "key": "abcd", "value": "xyz"},
                     {"type": "remove-tag", "tags": ["custodian_cleanup"]},
@@ -393,6 +409,7 @@ class ConnectHoursOfOperationTest(BaseTest):
         arn = resources[0]['HoursOfOperationArn']
         tags = client.list_tags_for_resource(resourceArn=arn)
         self.assertEqual(tags.get('tags'), {'c7n': 'True', 'abcd': 'xyz'})
+
 
 class ConnectPhoneNumberTest(BaseTest):
     def test_connect_phone_number_query(self):
@@ -430,7 +447,9 @@ class ConnectPhoneNumberTest(BaseTest):
             {
                 "name": "connect-phone-number-tag-test",
                 "resource": "connect-phone-number",
-                "filters": [{'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}],
+                "filters": [
+                    {'tag:custodian_cleanup': 'Resource does not meet policy: notify@2022/09/19'}
+                ],
                 "actions": [
                     {"type": "tag", "key": "abcd", "value": "xyz"},
                     {"type": "remove-tag", "tags": ["custodian_cleanup"]},
