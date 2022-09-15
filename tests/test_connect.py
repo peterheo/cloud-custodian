@@ -36,7 +36,7 @@ class ConnectInstanceTest(BaseTest):
 class ConnectUserTest(BaseTest):
 
     def test_connect_user_query(self):
-        session_factory = self.record_flight_data("test_connect_user_query")
+        session_factory = self.replay_flight_data("test_connect_user_query")
         p = self.load_policy(
             {
                 "name": "connect-user-query-test",
@@ -90,7 +90,7 @@ class ConnectUserTest(BaseTest):
 class ConnectRoutingProfileTest(BaseTest):
 
     def test_connect_routing_profile_query(self):
-        session_factory = self.record_flight_data("test_connect_routing_profile_query")
+        session_factory = self.replay_flight_data("test_connect_routing_profile_query")
         p = self.load_policy(
             {
                 "name": "connect-routing-profile-query-test",
@@ -144,7 +144,7 @@ class ConnectRoutingProfileTest(BaseTest):
 class ConnectQueueTest(BaseTest):
 
     def test_connect_queue_query(self):
-        session_factory = self.record_flight_data("test_connect_queue_query")
+        session_factory = self.replay_flight_data("test_connect_queue_query")
         p = self.load_policy(
             {
                 "name": "connect-queue-query-test",

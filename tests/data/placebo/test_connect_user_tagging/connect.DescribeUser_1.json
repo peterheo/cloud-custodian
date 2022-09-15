@@ -23,8 +23,8 @@
             ],
             "RoutingProfileId": "5129a6f0-5ad6-42f2-8a72-46cc954bb80c",
             "Tags": {
-                "custodian_cleanup": "Resource does not meet policy: notify@2022/09/19",
-                "c7n": "True"
+                "c7n": "True",
+                "abcd": "xyz"
             }
         }
     }
