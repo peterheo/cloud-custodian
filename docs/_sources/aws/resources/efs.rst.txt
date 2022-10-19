@@ -12,6 +12,8 @@ Filters
 -------
 
 
+  - :ref:`check-secure-transport <aws.efs.filters.check-secure-transport>`
+
   - :ref:`config-compliance <aws.common.filters.config-compliance>`
   
   - :ref:`event <aws.common.filters.event>`
@@ -38,6 +40,59 @@ Filters
   
   - :ref:`value <aws.common.filters.value>`
   
+
+
+.. _aws.efs.filters.check-secure-transport:
+
+check-secure-transport
+++++++++++++++++++++++
+Find EFS that does not enforce secure transport
+
+:Example:
+
+.. code-block:: yaml
+
+ - name: efs-securetransport-check-policy
+   resource: efs
+   filters:
+     - check-secure-transport
+
+To configure an EFS to enforce secure transport, set up the appropriate
+Effect and Condition for its policy document. For example:
+
+.. code-block:: json
+
+    {
+        "Sid": "efs-statement-b3f6b59b-d938-4001-9154-508f67707073",
+        "Effect": "Deny",
+        "Principal": { "AWS": "*" },
+        "Action": "*",
+        "Condition": {
+            "Bool": { "aws:SecureTransport": "false" }
+        }
+    }
+
+.. container:: toggle
+
+  
+
+  .. raw:: html
+     
+    <div class="header docutils container" style=""></div>
+
+  .. code-block:: yaml
+
+    properties:
+      type:
+        enum:
+        - check-secure-transport
+    required:
+    - type
+
+
+
+
+Permissions - elasticfilesystem:DescribeFileSystemPolicy
 
 
 .. _aws.efs.filters.json-diff:

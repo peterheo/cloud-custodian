@@ -64,6 +64,8 @@ Filters
 
   - :ref:`state-age <aws.ec2.filters.state-age>`
 
+  - :ref:`stop-protected <aws.ec2.filters.stop-protected>`
+
   - :ref:`subnet <aws.common.filters.subnet>`
   
   - :ref:`tag-count <aws.common.filters.tag-count>`
@@ -1277,6 +1279,58 @@ Age an instance has been in the given state.
 
 
 
+.. _aws.ec2.filters.stop-protected:
+
+stop-protected
+++++++++++++++
+EC2 instances with ``disableApiStop`` attribute set
+
+Filters EC2 instances with ``disableApiStop`` attribute set to true.
+
+:Example:
+
+.. code-block:: yaml
+
+    policies:
+      - name: stop-protection-enabled
+        resource: ec2
+        filters:
+          - type: stop-protected
+
+:Example:
+
+.. code-block:: yaml
+
+    policies:
+      - name: stop-protection-NOT-enabled
+        resource: ec2
+        filters:
+          - not:
+            - type: stop-protected
+
+.. container:: toggle
+
+  
+
+  .. raw:: html
+     
+    <div class="header docutils container" style=""></div>
+
+  .. code-block:: yaml
+
+    properties:
+      type:
+        enum:
+        - stop-protected
+    required:
+    - type
+
+
+
+
+Permissions - ec2:DescribeInstanceAttribute
+
+
 .. _aws.ec2.filters.termination-protected:
 
 termination-protected
@@ -1814,7 +1868,7 @@ Require instances to use IMDSv2
      - name: ec2-require-imdsv2
        resource: ec2
        filters:
-         - MetadataOptions.HttpToken: optional
+         - MetadataOptions.HttpTokens: optional
        actions:
          - type: set-metadata-access
            tokens: required
@@ -1833,6 +1887,15 @@ Disable metadata server access
        actions:
          - type: set-metadata-access
            endpoint: disabled
+
+   policies:
+     - name: ec2-enable-metadata-tags
+       resource: ec2
+       filters:
+         - MetadataOptions.InstanceMetadataTags: disabled
+       actions:
+         - type: set-metadata-access
+           metadata-tags: enabled
 
 Reference: https://amzn.to/2XOuxpQ
 
@@ -1853,6 +1916,8 @@ Reference: https://amzn.to/2XOuxpQ
       - required:
         - tokens
       - required:
+        - metadatatags
+      - required:
         - hop-limit
       endpoint:
         enum:
@@ -1862,6 +1927,10 @@ Reference: https://amzn.to/2XOuxpQ
         maximum: 64
         minimum: 1
         type: integer
+      metadata-tags:
+        enum:
+        - enabled
+        - disabled
       tokens:
         enum:
         - required
@@ -2109,7 +2178,7 @@ While ec2 offers a bulk delete api, any given instance can be configured
 with api deletion termination protection, so we can't use the bulk call
 reliabily, we need to process the instances individually. Additionally
 If we're configured with 'force' then we'll turn off instance termination
-protection.
+and stop protection.
 
 :Example:
 

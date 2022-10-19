@@ -73,6 +73,8 @@ for more details.
         type: object
       function-prefix:
         type: string
+      handler:
+        type: string
       kms_key_arn:
         type: string
       layers:
@@ -166,6 +168,8 @@ A lambda policy using cloudwatch events rules on cloudtrail api logs.
         type: object
       function-prefix:
         type: string
+      handler:
+        type: string
       kms_key_arn:
         type: string
       layers:
@@ -220,11 +224,39 @@ This mode represents a periodic/scheduled AWS config evaluation.
 
 The primary benefit this mode offers is to support additional resources
 beyond what config supports natively, as it can post evaluations for
-any resource which has a cloudformation type. If a resource is natively
-supported by config its highly recommended to use a `config-rule`
-mode instead.
+any resource which has a cloudformation type.
 
-This mode effectively receives no data from config, instead its
+If a resource is natively supported by config it's highly recommended
+to use a `config-rule` mode instead. Deployment will fail unless
+the policy explicitly opts out of that check with `ignore-support-check`.
+This can be useful in cases when a policy resource has native Config
+support, but filters based on related resource attributes.
+
+:example:
+
+VPCs have native Config support, but flow logs are a separate resource.
+This policy forces `config-poll-rule` mode to bypass the Config support
+check and evaluate VPC compliance on a schedule.
+
+.. code-block:: yaml
+
+    policies:
+      - name: vpc-flow-logs
+        resource: vpc
+        mode:
+          type: config-poll-rule
+          role: arn:aws:iam::{account_id}:role/MyRole
+          ignore-support-check: True
+        filters:
+          - not:
+            - type: flow-logs
+              destination-type: "s3"
+              enabled: True
+              status: active
+              traffic-type: all
+              destination: "arn:aws:s3:::mys3flowlogbucket"
+
+This mode effectively receives no data from config, instead it's
 periodically executed by config and polls and evaluates all
 resources. It is equivalent to a periodic policy, except it also
 pushes resource evaluations to config.
@@ -250,6 +282,10 @@ pushes resource evaluations to config.
         type: object
       function-prefix:
         type: string
+      handler:
+        type: string
+      ignore-support-check:
+        type: boolean
       kms_key_arn:
         type: string
       layers:
@@ -333,6 +369,8 @@ See `AWS Config <https://aws.amazon.com/config/>`_ for more details.
       execution-options:
         type: object
       function-prefix:
+        type: string
+      handler:
         type: string
       kms_key_arn:
         type: string
@@ -421,6 +459,8 @@ for more details.
         type: object
       function-prefix:
         type: string
+      handler:
+        type: string
       kms_key_arn:
         type: string
       layers:
@@ -499,6 +539,8 @@ by AWS Guard Duty for automated incident response. See `Guard Duty
       execution-options:
         type: object
       function-prefix:
+        type: string
+      handler:
         type: string
       kms_key_arn:
         type: string
@@ -594,6 +636,8 @@ resource specific.
       execution-options:
         type: object
       function-prefix:
+        type: string
+      handler:
         type: string
       kms_key_arn:
         type: string
@@ -698,6 +742,8 @@ https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cloudwatch-
         type: object
       function-prefix:
         type: string
+      handler:
+        type: string
       kms_key_arn:
         type: string
       layers:
@@ -773,6 +819,8 @@ Runs Custodian in AWS lambda at user defined cron interval.
       execution-options:
         type: object
       function-prefix:
+        type: string
+      handler:
         type: string
       kms_key_arn:
         type: string
@@ -866,6 +914,8 @@ for more details.
       execution-options:
         type: object
       function-prefix:
+        type: string
+      handler:
         type: string
       kms_key_arn:
         type: string
