@@ -1,0 +1,15 @@
+{
+    "status_code": 200,
+    "data": {
+        "ResponseMetadata": {},
+        "campaignSummaryList": [
+            {
+                "arn": "arn:aws:connect-campaigns:us-east-1:644160558196:campaign/be86a7da-93d5-41f4-969e-cae6903faeaa",
+                "connectInstanceId": "25f1514d-14d0-4a06-b28f-9df132d33d3d",
+                "id": "be86a7da-93d5-41f4-969e-cae6903faeaa",
+                "name": "Test"
+            }
+        ],
+        "nextToken": ""
+    }
+}
