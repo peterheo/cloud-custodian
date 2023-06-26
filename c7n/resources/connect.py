@@ -123,10 +123,10 @@ class ConnectCampaign(QueryResourceManager):
 
 @ConnectCampaign.filter_registry.register('instance-config')
 class ConnectCampaignInstanceConfigFilter(ValueFilter):
-  schema = type_schema('instance-config', rinherit=ValueFilter.schema)    
+  schema = type_schema('instance-config', rinherit=ValueFilter.schema)
   permissions = ('connectcampaigns:GetConnectInstanceConfig')
   annotation_key = 'c7n:InstanceConfig'
-  
+
   def process(self, resources, event=None):
     client = local_session(self.manager.session_factory).client('connectcampaigns')
     results = []
@@ -142,7 +142,6 @@ class ConnectCampaignInstanceConfigFilter(ValueFilter):
 
     return results
 
-    
 
 @ConnectCampaign.filter_registry.register('kms-key')
 class ConnectCampaignKmsFilter(KmsRelatedFilter):
