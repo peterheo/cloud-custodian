@@ -160,8 +160,8 @@ class ConnectCampaignKmsFilter(KmsRelatedFilter):
       # Be sure that a related key lookup covers both cases.
       for r in related:
           related_map[r['KeyId']] = r
-          for alias in r.get('AliasNames', []):
-              related_map[alias] = r
+          r['c7n:AliasName'] = r.get('AliasNames', ('',))[0]
+
       return related_map
 
   def get_related_ids(self, resources):
