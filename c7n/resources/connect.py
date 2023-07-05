@@ -124,7 +124,7 @@ class ConnectCampaign(QueryResourceManager):
 @ConnectCampaign.filter_registry.register('instance-config')
 class ConnectCampaignInstanceConfigFilter(ValueFilter):
   schema = type_schema('instance-config', rinherit=ValueFilter.schema)
-  permissions = ('connectcampaigns:GetConnectInstanceConfig')
+  permissions = ('connectcampaigns:GetConnectInstanceConfig',)
   annotation_key = 'c7n:InstanceConfig'
 
   def process(self, resources, event=None):
