@@ -3,9 +3,9 @@ SELF_MAKE := $(lastword $(MAKEFILE_LIST))
 
 PKG_REPO = testpypi
 PKG_INCREMENT := patch
-PKG_SET := tools/c7n_gcp tools/c7n_kube tools/c7n_openstack tools/c7n_mailer tools/c7n_logexporter tools/c7n_policystream tools/c7n_trailcreator tools/c7n_org tools/c7n_sphinxext tools/c7n_terraform tools/c7n_awscc tools/c7n_tencentcloud tools/c7n_azure
+PKG_SET := tools/c7n_gcp tools/c7n_kube tools/c7n_openstack tools/c7n_mailer tools/c7n_logexporter tools/c7n_policystream tools/c7n_trailcreator tools/c7n_org tools/c7n_sphinxext tools/c7n_terraform tools/c7n_awscc tools/c7n_tencentcloud tools/c7n_azure tools/c7n_oci
 
-FMT_SET := tools/c7n_left
+FMT_SET := tools/c7n_left tools/c7n_mailer tools/c7n_oci
 
 PLATFORM_ARCH := $(shell python3 -c "import platform; print(platform.machine())")
 PLATFORM_OS := $(shell python3 -c "import platform; print(platform.system())")
@@ -51,6 +51,7 @@ test-coverage:
             --cov tools/c7n_mailer/c7n_mailer \
             --cov tools/c7n_policystream/c7n_policystream \
             --cov tools/c7n_tencentcloud/c7n_tencentcloud \
+            --cov tools/c7n_oci/c7n_oci \
             tests tools $(ARGS)
 
 test-functional:
@@ -129,6 +130,14 @@ pkg-publish-wheel:
 	twine upload -r $(PKG_REPO) dist/*
 	for pkg in $(PKG_SET); do cd $$pkg && twine upload -r $(PKG_REPO) dist/* && cd ../..; done
 
+data-update:
+# aws data sets
+	python tools/dev/cfntypedb.py -f tests/data/cfn-types.json
+	python tools/dev/arnref.py -f tests/data/arn-types.json
+	python tools/dev/iamdb.py -f tests/data/iam-actions.json
+# gcp data sets
+	python tools/dev/gcpiamdb.py -f tools/c7n_gcp/tests/data/iam-permissions.json
+	python tools/dev/gcpregion.py -f tools/c7n_gcp/c7n_gcp/regions.json
 
 ###
 # Static analyzers

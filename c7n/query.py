@@ -11,7 +11,6 @@ import itertools
 import json
 from typing import List
 
-import jmespath
 import os
 
 from c7n.actions import ActionRegistry
@@ -21,7 +20,7 @@ from c7n.manager import ResourceManager
 from c7n.registry import PluginRegistry
 from c7n.tags import register_ec2_tags, register_universal_tags, universal_augment
 from c7n.utils import (
-    local_session, generate_arn, get_retry, chunks, camelResource)
+    local_session, generate_arn, get_retry, chunks, camelResource, jmespath_compile)
 
 
 try:
@@ -60,7 +59,7 @@ class ResourceQuery:
             data = op(**params)
 
         if path:
-            path = jmespath.compile(path)
+            path = jmespath_compile(path)
             data = path.search(data)
 
         return data
@@ -85,17 +84,17 @@ class ResourceQuery:
         """
         m = self.resolve(resource_manager.resource_type)
         params = {}
-        client_filter = False
+        client_filter = True
 
-        # Try to formulate server side query
+        # Try to formulate server side query in the below two scenarios
+        # else fall back to client side filtering
         if m.filter_name:
             if m.filter_type == 'list':
                 params[m.filter_name] = identities
-            elif m.filter_type == 'scalar':
-                assert len(identities) == 1, "Scalar server side filter"
+                client_filter = False
+            elif m.filter_type == 'scalar' and len(identities) == 1:
                 params[m.filter_name] = identities[0]
-        else:
-            client_filter = True
+                client_filter = False
 
         resources = self.filter(resource_manager, **params)
         if client_filter:

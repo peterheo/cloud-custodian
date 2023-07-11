@@ -1,7 +1,7 @@
 # Copyright The Cloud Custodian Authors.
 # SPDX-License-Identifier: Apache-2.0
 import time
-from .common import BaseTest, functional, event_data
+from .common import BaseTest, functional, event_data, load_data
 from unittest.mock import MagicMock
 
 from botocore.exceptions import ClientError as BotoClientError
@@ -346,6 +346,45 @@ class VpcTest(BaseTest):
         resources = p.run()
         self.assertEqual(len(resources), 2)
         self.assertTrue("subnet-068dfbf3f275a6ae8" in resources[0]["c7n:matched-vpc-endpoint"])
+
+    def test_subnet_ip_address_usage_filter(self):
+        factory = self.replay_flight_data("test_subnet_ip_address_usage_filter", region="us-east-2")
+        p = self.load_policy(
+            {
+                "name": "subnet-no-ips-used",
+                "resource": "aws.subnet",
+                "filters": [
+                    {
+                        "type": "ip-address-usage",
+                        "key": "NumberUsed",
+                        "value": 0,
+                    }
+                ],
+            },
+            session_factory=factory,
+            config={"region": "us-east-2"},
+        )
+        resources = p.run()
+        self.assertEqual(len(resources), 2)
+
+        p = self.load_policy(
+            {
+                "name": "subnet-almost-full",
+                "resource": "aws.subnet",
+                "filters": [
+                    {
+                        "type": "ip-address-usage",
+                        "key": "PercentUsed",
+                        "op": "greater-than",
+                        "value": 90,
+                    }
+                ],
+            },
+            session_factory=factory,
+            config={"region": "us-east-2"},
+        )
+        resources = p.run()
+        self.assertEqual(len(resources), 1)
 
     def test_endpoint_policy_filter(self):
         factory = self.replay_flight_data("test_endpoint_policy_filter")
@@ -802,6 +841,29 @@ class TransitGatewayTest(BaseTest):
             config={'region': 'us-west-2'}, session_factory=factory)
         resources = p.push(event_data("event-transit-gateway-delete-vpc-attachment.json"))
         self.assertEqual(len(resources), 1)
+
+
+def test_tgw_attachment_metrics_filter(test):
+    factory = test.replay_flight_data("test_tgw_attachment_metrics_filter")
+    p = test.load_policy(
+        {
+            "name": "tgw_attachment-idle",
+            "resource": "aws.transit-attachment",
+            "filters": [
+                {
+                    "type": "metrics",
+                    "name": "BytesIn",
+                    "op": "le",
+                    "value": 0,
+                    "statistics": "Sum",
+                    "days": 1
+                }
+            ],
+        },
+        session_factory=factory,
+    )
+    resources = p.run()
+    test.assertEqual(len(resources), 1)
 
 
 class NetworkInterfaceTest(BaseTest):
@@ -1379,6 +1441,16 @@ class SecurityGroupTest(BaseTest):
                 }
             ],
         )
+
+    def test_used_consumer_eni_in_producer(self):
+        p = self.load_policy(
+            {"name": "sg-used", "resource": "security-group", "filters": ["used"]},
+        )
+        used = p.resource_manager.filters[0]
+        used.nics = load_data('ram-producer-view-consumer-eni.json')['NetworkInterfaces']
+
+        group_enis = used._get_eni_attributes()
+        assert set(group_enis) == {'sg-123', 'sg-456', 'sg-789'}
 
     def test_used(self):
         factory = self.replay_flight_data("test_security_group_used")
@@ -2975,6 +3047,29 @@ class EndpointTest(BaseTest):
             ('ec2:AuthorizeSecurityGroupIngress',
              'ec2:RevokeSecurityGroupIngress',
              'ec2:RevokeSecurityGroupEgress'))
+
+
+def test_endpoint_metrics_filter(test):
+    factory = test.replay_flight_data("test_vpc_endpoint_metrics_filter")
+    p = test.load_policy(
+        {
+            "name": "vpc_endpoint-idle",
+            "resource": "aws.vpc-endpoint",
+            "filters": [
+                {
+                    "type": "metrics",
+                    "name": "ActiveConnections",
+                    "op": "le",
+                    "value": 0,
+                    "statistics": "Sum",
+                    "days": 1
+                }
+            ],
+        },
+        session_factory=factory,
+    )
+    resources = p.run()
+    test.assertEqual(len(resources), 0)
 
 
 class InternetGatewayTest(BaseTest):
