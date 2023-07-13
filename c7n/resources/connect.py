@@ -132,7 +132,7 @@ class ConnectCampaign(QueryResourceManager):
         name = "name"
         id = "id"
 
-    permissions = ('connectcampaigns:GetConnectInstanceConfig',)
+    permissions = ('connectcampaigns:ListCampaigns', 'connectcampaigns:GetConnectInstanceConfig',)
 
     source_mapping = {
         'describe': DescribeConnectCampaign
