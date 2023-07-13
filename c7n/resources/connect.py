@@ -1,7 +1,7 @@
 # Copyright The Cloud Custodian Authors.
 # SPDX-License-Identifier: Apache-2.0
 from c7n.manager import resources
-from c7n.query import QueryResourceManager, TypeInfo
+from c7n.query import DescribeSource, QueryResourceManager, TypeInfo
 from c7n.filters import ValueFilter
 from c7n.utils import local_session, type_schema
 from c7n.actions import Action
@@ -110,6 +110,18 @@ class ConnectInstanceAttributeFilter(ValueFilter):
                     AttributeType=self.data.get("attribute_type"), Value=self.data.get("value"))
 
 
+class DescribeConnectCampaign(DescribeSource):
+
+    def augment(self, resources):
+        client = local_session(self.manager.session_factory).client('connectcampaigns')
+        for r in resources:
+            print(r)
+            instance_config = client.get_connect_instance_config(
+              connectInstanceId=r['connectInstanceId'])
+            r.update(instance_config)
+        return resources
+
+
 @resources.register('connect-campaign')
 class ConnectCampaign(QueryResourceManager):
 
@@ -120,61 +132,14 @@ class ConnectCampaign(QueryResourceManager):
         name = "name"
         id = "id"
 
+    permissions = ('connectcampaigns:GetConnectInstanceConfig',)
 
-@ConnectCampaign.filter_registry.register('instance-config')
-class ConnectCampaignInstanceConfigFilter(ValueFilter):
-  schema = type_schema('instance-config', rinherit=ValueFilter.schema)
-  permissions = ('connectcampaigns:GetConnectInstanceConfig',)
-  annotation_key = 'c7n:InstanceConfig'
-
-  def process(self, resources, event=None):
-    client = local_session(self.manager.session_factory).client('connectcampaigns')
-    results = []
-
-    for r in resources:
-        if self.annotation_key not in r:
-            instance_config = client.get_connect_instance_config(
-              connectInstanceId=r['connectInstanceId'])['connectInstanceConfig']
-            r[self.annotation_key] = instance_config
-
-        if self.match(r[self.annotation_key]):
-            results.append(r)
-
-    return results
+    source_mapping = {
+        'describe': DescribeConnectCampaign
+    }
 
 
 @ConnectCampaign.filter_registry.register('kms-key')
 class ConnectCampaignKmsFilter(KmsRelatedFilter):
-  permissions = ('connectcampaigns:GetConnectInstanceConfig',)
-  RelatedIdsExpression = 'keyArn'
-
-  def get_related(self, resources):
-      resource_manager = self.get_resource_manager()
-      related_ids = self.get_related_ids(resources)
-      if len(related_ids) < self.FetchThreshold:
-          related = resource_manager.get_resources(list(related_ids))
-      else:
-          related = resource_manager.resources()
-      related_map = {}
-      # A resource's key property may point to an explicit ID or a key alias.
-      # Be sure that a related key lookup covers both cases.
-      for r in related:
-          related_map[r['KeyId']] = r
-          r['c7n:AliasName'] = r.get('AliasNames', ('',))[0]
-
-      return related_map
-
-  def get_related_ids(self, resources):
-    client = local_session(self.manager.session_factory).client('connectcampaigns')
-    related_ids = []
-    for r in resources:
-      instance_config = client.get_connect_instance_config(
-        connectInstanceId=r['connectInstanceId'])['connectInstanceConfig']
-      related_ids.append(instance_config['encryptionConfig']['keyArn'])
-
-    normalized_ids = []
-    for rid in related_ids:
-      normalized_ids.append(rid.rsplit('/', 1)[-1])
-
-    return normalized_ids
+  RelatedIdsExpression = 'connectInstanceConfig.encryptionConfig.keyArn'
 

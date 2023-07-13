@@ -110,9 +110,9 @@ class ConnectCampaignTest(BaseTest):
             }, session_factory=session_factory
         )
         resources = p.run()
-        self.assertEqual(len(resources), 1)
+        self.assertEqual(2, len(resources))
 
-    def test_connect_campaign_instance_config_filter(self):
+    def test_connect_campaign_instance_config(self):
         session_factory = self.replay_flight_data("test_connect_campaign_instance_config_filter")
         p = self.load_policy(
             {
@@ -120,8 +120,8 @@ class ConnectCampaignTest(BaseTest):
                 "resource": "connect-campaign",
                 'filters': [
                     {
-                        'type': 'instance-config',
-                        'key': 'encryptionConfig.enabled',
+                        'type': 'value',
+                        'key': 'connectInstanceConfig.encryptionConfig.enabled',
                         'value': True
                     }
                 ]
