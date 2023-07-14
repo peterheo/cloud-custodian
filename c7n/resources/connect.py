@@ -1,7 +1,7 @@
 # Copyright The Cloud Custodian Authors.
 # SPDX-License-Identifier: Apache-2.0
 from c7n.manager import resources
-from c7n.query import DescribeSource, QueryResourceManager, TypeInfo
+from c7n.query import QueryResourceManager, TypeInfo
 from c7n.filters import ValueFilter
 from c7n.utils import local_session, type_schema
 from c7n.actions import Action
@@ -110,36 +110,25 @@ class ConnectInstanceAttributeFilter(ValueFilter):
                     AttributeType=self.data.get("attribute_type"), Value=self.data.get("value"))
 
 
-class DescribeConnectCampaign(DescribeSource):
-
-    def augment(self, resources):
-        client = local_session(self.manager.session_factory).client('connectcampaigns')
-        for r in resources:
-            print(r)
-            instance_config = client.get_connect_instance_config(
-              connectInstanceId=r['connectInstanceId'])
-            r.update(instance_config)
-        return resources
-
-
 @resources.register('connect-campaign')
 class ConnectCampaign(QueryResourceManager):
 
     class resource_type(TypeInfo):
         service = 'connectcampaigns'
         enum_spec = ('list_campaigns', 'campaignSummaryList', None)
+        detail_spec = (
+            'get_connect_instance_config',
+            'connectInstanceId',
+            'connectInstanceId',
+            None
+        )
         arn_type = 'campaign'
         name = "name"
         id = "id"
 
     permissions = ('connectcampaigns:ListCampaigns', 'connectcampaigns:GetConnectInstanceConfig',)
 
-    source_mapping = {
-        'describe': DescribeConnectCampaign
-    }
-
 
 @ConnectCampaign.filter_registry.register('kms-key')
 class ConnectCampaignKmsFilter(KmsRelatedFilter):
   RelatedIdsExpression = 'connectInstanceConfig.encryptionConfig.keyArn'
-
